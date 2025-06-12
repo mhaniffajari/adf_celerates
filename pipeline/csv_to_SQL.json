@@ -1,0 +1,86 @@
+{
+	"name": "csv_to_SQL",
+	"properties": {
+		"activities": [
+			{
+				"name": "csv_to_SQL",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"additionalColumns": [
+							{
+								"name": "ingest_date",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							}
+						],
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlServerSink",
+						"preCopyScript": "drop table dbo.orders",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "CSV_Blob_hanifajaristorageaccount",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "adf",
+							"folder": "data",
+							"file": "orders_dataset.csv",
+							"column_delimiter": ",",
+							"first_row_as_header": "True"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SQL_mhanif",
+						"type": "DatasetReference",
+						"parameters": {
+							"database": "edw",
+							"schema": "dbo",
+							"table": "orders"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Practice Case Day 2"
+		},
+		"annotations": []
+	}
+}
