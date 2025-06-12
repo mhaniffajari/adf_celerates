@@ -1,0 +1,6 @@
+{
+	"name": "MSI-Self-Hosted-IR",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
