@@ -1,0 +1,21 @@
+{
+	"name": "CSV_Blob_hanifajaristorageaccount",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "hanifajaristorageaccount_Blob_Storage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
