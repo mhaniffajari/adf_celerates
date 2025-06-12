@@ -1,0 +1,9 @@
+{
+	"name": "mhanifajariADF",
+	"location": "southeastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "8dbc7016-bed3-4b0d-bb4e-fb68610f211a",
+		"tenantId": "ee586e2b-824e-433d-8a66-8349234cb9b2"
+	}
+}
