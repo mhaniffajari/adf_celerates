@@ -1,5 +1,5 @@
 {
-	"name": "solliancepublicdata_HTTP_Binary",
+	"name": "Binary_solliancepublicdata_HTTP",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "solliancepublicdata_HTTP",
