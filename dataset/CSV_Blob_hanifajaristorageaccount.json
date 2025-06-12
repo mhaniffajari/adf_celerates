@@ -22,7 +22,7 @@
 			},
 			"first_row_as_header": {
 				"type": "bool",
-				"defaultValue": "True"
+				"defaultValue": true
 			}
 		},
 		"annotations": [],
