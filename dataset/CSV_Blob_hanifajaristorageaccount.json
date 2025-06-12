@@ -5,15 +5,53 @@
 			"referenceName": "hanifajaristorageaccount_Blob_Storage",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "adf"
+			},
+			"folder": {
+				"type": "string"
+			},
+			"file": {
+				"type": "string"
+			},
+			"column_delimiter": {
+				"type": "string",
+				"defaultValue": ","
+			},
+			"first_row_as_header": {
+				"type": "bool",
+				"defaultValue": "True"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation"
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().file",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folder",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": {
+				"value": "@dataset().column_delimiter",
+				"type": "Expression"
+			},
 			"escapeChar": "\\",
-			"firstRowAsHeader": true,
+			"firstRowAsHeader": {
+				"value": "@dataset().first_row_as_header",
+				"type": "Expression"
+			},
 			"quoteChar": "\""
 		},
 		"schema": []
