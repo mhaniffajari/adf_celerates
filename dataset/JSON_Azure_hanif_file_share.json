@@ -1,0 +1,33 @@
+{
+	"name": "JSON_Azure_hanif_file_share",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "hanif_Azure_File_Share",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"folder": {
+				"type": "string"
+			},
+			"file": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"fileName": {
+					"value": "@dataset().file",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folder",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": {}
+	}
+}
