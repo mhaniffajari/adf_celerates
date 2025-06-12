@@ -64,7 +64,8 @@
 					{
 						"activity": "HTTP_to_Blob",
 						"dependencyConditions": [
-							"Succeeded"
+							"Succeeded",
+							"Failed"
 						]
 					}
 				],
