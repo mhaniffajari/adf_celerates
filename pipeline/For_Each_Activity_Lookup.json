@@ -16,9 +16,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('file_name')",
+						"value": "@activity('Lookup_Filename').output.value",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "Blob_to_Blob",
@@ -63,7 +64,7 @@
 										"container": "training",
 										"folder": "data",
 										"file": {
-											"value": "@item()",
+											"value": "@item().file_name",
 											"type": "Expression"
 										}
 									}
@@ -77,7 +78,7 @@
 										"container": "adf",
 										"folder": "data",
 										"file": {
-											"value": "@item()",
+											"value": "@item().file_name",
 											"type": "Expression"
 										}
 									}
@@ -98,18 +99,25 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SQL_hanifajari",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "list_json_file"
+						}
+					},
+					"firstRowOnly": false
+				}
 			}
 		],
-		"variables": {
-			"file_name": {
-				"type": "Array",
-				"defaultValue": [
-					"documents.json",
-					"example.json"
-				]
-			}
-		},
 		"folder": {
 			"name": "Practice Case Day 2"
 		},
