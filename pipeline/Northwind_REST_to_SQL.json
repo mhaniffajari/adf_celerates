@@ -1,0 +1,9 @@
+{
+	"name": "Northwind_REST_to_SQL",
+	"properties": {
+		"folder": {
+			"name": "Northwind"
+		},
+		"annotations": []
+	}
+}
