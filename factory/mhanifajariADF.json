@@ -1,5 +1,13 @@
 {
 	"name": "mhanifajariADF",
+	"properties": {
+		"globalParameters": {
+			"server_name": {
+				"type": "string",
+				"value": "dev"
+			}
+		}
+	},
 	"location": "southeastasia",
 	"identity": {
 		"type": "SystemAssigned",
