@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "mhanifajariADF"
 		},
+		"app_transaction_PostgreSQL_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'app_transaction_PostgreSQL'"
+		},
 		"hanif_Azure_File_Share_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'hanif_Azure_File_Share'"
@@ -26,6 +30,18 @@
 		"mhanif_SQL_Server_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'mhanif_SQL_Server'"
+		},
+		"app_transaction_PostgreSQL_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "app-transaction.postgres.database.azure.com"
+		},
+		"app_transaction_PostgreSQL_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "postgres"
+		},
+		"app_transaction_PostgreSQL_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "admin_pg"
 		},
 		"hanif_Azure_File_Share_properties_typeProperties_host": {
 			"type": "string",
@@ -63,6 +79,10 @@
 			"type": "string",
 			"defaultValue": "https://solliancepublicdata.blob.core.windows.net"
 		},
+		"app_transaction_trigger_properties_main_pipeline_parameters_job_name": {
+			"type": "string",
+			"defaultValue": "app_transaction"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -90,6 +110,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"app_transaction_PostgreSQL_password": {
+						"value": "[parameters('app_transaction_PostgreSQL_password')]"
+					},
 					"hanif_Azure_File_Share_password": {
 						"value": "[parameters('hanif_Azure_File_Share_password')]"
 					},
@@ -104,6 +127,15 @@
 					},
 					"mhanif_SQL_Server_password": {
 						"value": "[parameters('mhanif_SQL_Server_password')]"
+					},
+					"app_transaction_PostgreSQL_properties_typeProperties_server": {
+						"value": "[parameters('app_transaction_PostgreSQL_properties_typeProperties_server')]"
+					},
+					"app_transaction_PostgreSQL_properties_typeProperties_database": {
+						"value": "[parameters('app_transaction_PostgreSQL_properties_typeProperties_database')]"
+					},
+					"app_transaction_PostgreSQL_properties_typeProperties_username": {
+						"value": "[parameters('app_transaction_PostgreSQL_properties_typeProperties_username')]"
 					},
 					"hanif_Azure_File_Share_properties_typeProperties_host": {
 						"value": "[parameters('hanif_Azure_File_Share_properties_typeProperties_host')]"
@@ -149,6 +181,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"app_transaction_trigger_properties_main_pipeline_parameters_job_name": {
+						"value": "[parameters('app_transaction_trigger_properties_main_pipeline_parameters_job_name')]"
 					}
 				}
 			},

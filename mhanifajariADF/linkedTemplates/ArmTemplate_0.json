@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "mhanifajariADF"
 		},
+		"app_transaction_PostgreSQL_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'app_transaction_PostgreSQL'"
+		},
 		"hanif_Azure_File_Share_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'hanif_Azure_File_Share'"
@@ -26,6 +30,18 @@
 		"mhanif_SQL_Server_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'mhanif_SQL_Server'"
+		},
+		"app_transaction_PostgreSQL_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "app-transaction.postgres.database.azure.com"
+		},
+		"app_transaction_PostgreSQL_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "postgres"
+		},
+		"app_transaction_PostgreSQL_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "admin_pg"
 		},
 		"hanif_Azure_File_Share_properties_typeProperties_host": {
 			"type": "string",
@@ -68,6 +84,28 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/app_transaction_PostgreSQL')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "PostgreSqlV2",
+				"typeProperties": {
+					"server": "[parameters('app_transaction_PostgreSQL_properties_typeProperties_server')]",
+					"port": 5432,
+					"database": "[parameters('app_transaction_PostgreSQL_properties_typeProperties_database')]",
+					"username": "[parameters('app_transaction_PostgreSQL_properties_typeProperties_username')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('app_transaction_PostgreSQL_password')]"
+					},
+					"sslMode": 2,
+					"authenticationType": "Basic"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/hanif_Azure_File_Share')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -507,6 +545,41 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PostgreSQL_app_transaction')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "app_transaction_PostgreSQL",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"schema": {
+						"type": "string"
+					},
+					"table": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "PostgreSqlV2Table",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/app_transaction_PostgreSQL')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SQL_hanifajari')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -826,514 +899,6 @@
 				"[concat(variables('factoryId'), '/datasets/SQL_hanifajari')]",
 				"[concat(variables('factoryId'), '/datasets/JSON_Blob_hanifstorageaccount')]",
 				"[concat(variables('factoryId'), '/datasets/JSON_Blob_hanifajaristorageaccount')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/For_Each_Activity_Lookup_Log')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ForEach_Every_JSON",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Lookup_Filename",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Lookup_Filename').output.value",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"activities": [
-								{
-									"name": "Blob_to_Blob",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "JsonSource",
-											"storeSettings": {
-												"type": "AzureBlobStorageReadSettings",
-												"recursive": true,
-												"enablePartitionDiscovery": false
-											},
-											"formatSettings": {
-												"type": "JsonReadSettings"
-											}
-										},
-										"sink": {
-											"type": "JsonSink",
-											"storeSettings": {
-												"type": "AzureBlobStorageWriteSettings"
-											},
-											"formatSettings": {
-												"type": "JsonWriteSettings"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "JSON_Blob_hanifstorageaccount",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": "training",
-												"folder": "data",
-												"file": {
-													"value": "@item().file_name",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "JSON_Blob_hanifajaristorageaccount",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": "adf",
-												"folder": "data",
-												"file": {
-													"value": "@item().file_name",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Success Log",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Blob_to_Blob",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "mhanif_SQL_Server",
-										"type": "LinkedServiceReference",
-										"parameters": {
-											"database": "edw"
-										}
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO dbo.file_transfer_log (file_name, file_path, ingest_time) VALUES (''', item().file_name, ''', ''https://storageacchanif.blob.core.windows.net/development/json_file/', item().file_name, ''', GETDATE());')",
-													"type": "Expression"
-												}
-											}
-										],
-										"scriptBlockExecutionTimeout": "02:00:00"
-									}
-								},
-								{
-									"name": "Failed Log",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Blob_to_Blob",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "mhanif_SQL_Server",
-										"type": "LinkedServiceReference",
-										"parameters": {
-											"database": "edw"
-										}
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@concat('INSERT INTO dbo.file_transfer_log (file_name, file_path, ingest_time) VALUES (''', item().file_name, ''', ''failed', ''', GETDATE());')",
-													"type": "Expression"
-												}
-											}
-										],
-										"scriptBlockExecutionTimeout": "02:00:00"
-									}
-								}
-							]
-						}
-					},
-					{
-						"name": "Lookup_Filename",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "SQL_hanifajari",
-								"type": "DatasetReference",
-								"parameters": {
-									"schema": "dbo",
-									"table": "list_json_file"
-								}
-							},
-							"firstRowOnly": false
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Practice Case Day 2"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SQL_hanifajari')]",
-				"[concat(variables('factoryId'), '/datasets/JSON_Blob_hanifstorageaccount')]",
-				"[concat(variables('factoryId'), '/datasets/JSON_Blob_hanifajaristorageaccount')]",
-				"[concat(variables('factoryId'), '/linkedServices/mhanif_SQL_Server')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Soliance_HTTP_to_SQL')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "HTTP_to_Blob",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "GET"
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
-							},
-							"sink": {
-								"type": "BinarySink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "Binary_solliancepublicdata_HTTP",
-								"type": "DatasetReference",
-								"parameters": {
-									"relative_url": "dataengineering/dp-203/awdata/CustomerSource.csv"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "Binary_Blob_hanifajaristorageaccount",
-								"type": "DatasetReference",
-								"parameters": {
-									"container": "adf",
-									"folder": "stage",
-									"file": {
-										"value": "@concat('CustomerSource',formatDateTime(utcNow(),'yyyyMMdd'),'.csv')",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					},
-					{
-						"name": "Blob_to_StageSQL",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "HTTP_to_Blob",
-								"dependencyConditions": [
-									"Succeeded",
-									"Failed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "SqlServerSink",
-								"preCopyScript": "IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'CustomerSource' AND TABLE_SCHEMA = 'dbo')\nBEGIN\n    TRUNCATE TABLE dbo.CustomerSource;\nEND",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 1
-										},
-										"sink": {
-											"name": "CustomerID",
-											"type": "Int32",
-											"physicalType": "int"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 2
-										},
-										"sink": {
-											"name": "Title",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 3
-										},
-										"sink": {
-											"name": "FirstName",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 4
-										},
-										"sink": {
-											"name": "MiddleName",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 5
-										},
-										"sink": {
-											"name": "LastName",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 6
-										},
-										"sink": {
-											"name": "Suffix",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 7
-										},
-										"sink": {
-											"name": "CompanyName",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 8
-										},
-										"sink": {
-											"name": "SalesPerson",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 9
-										},
-										"sink": {
-											"name": "EmailAddress",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"type": "String",
-											"ordinal": 10
-										},
-										"sink": {
-											"name": "Phone",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "CSV_Blob_hanifajaristorageaccount",
-								"type": "DatasetReference",
-								"parameters": {
-									"container": "adf",
-									"folder": "stage",
-									"file": "@concat('CustomerSource',formatDateTime(utcNow(),'yyyyMMdd'),'.csv')",
-									"column_delimiter": "|",
-									"first_row_as_header": false
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SQL_mhanif",
-								"type": "DatasetReference",
-								"parameters": {
-									"database": "edw",
-									"schema": "dbo",
-									"table": "CustomerSource"
-								}
-							}
-						]
-					},
-					{
-						"name": "SCD_Type_1_Customer",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "Blob_to_StageSQL",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[SCD_Type_1_Customer]"
-						},
-						"linkedServiceName": {
-							"referenceName": "mhanif_SQL_Server",
-							"type": "LinkedServiceReference",
-							"parameters": {
-								"database": "edw"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "Practice Case Day 2"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Binary_solliancepublicdata_HTTP')]",
-				"[concat(variables('factoryId'), '/datasets/Binary_Blob_hanifajaristorageaccount')]",
-				"[concat(variables('factoryId'), '/datasets/CSV_Blob_hanifajaristorageaccount')]",
-				"[concat(variables('factoryId'), '/datasets/SQL_mhanif')]",
-				"[concat(variables('factoryId'), '/linkedServices/mhanif_SQL_Server')]"
 			]
 		}
 	]

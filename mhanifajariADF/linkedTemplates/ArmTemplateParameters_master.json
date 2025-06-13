@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "mhanifajariADF"
 		},
+		"app_transaction_PostgreSQL_password": {
+			"value": ""
+		},
 		"hanif_Azure_File_Share_password": {
 			"value": ""
 		},
@@ -19,6 +22,15 @@
 		},
 		"mhanif_SQL_Server_password": {
 			"value": ""
+		},
+		"app_transaction_PostgreSQL_properties_typeProperties_server": {
+			"value": "app-transaction.postgres.database.azure.com"
+		},
+		"app_transaction_PostgreSQL_properties_typeProperties_database": {
+			"value": "postgres"
+		},
+		"app_transaction_PostgreSQL_properties_typeProperties_username": {
+			"value": "admin_pg"
 		},
 		"hanif_Azure_File_Share_properties_typeProperties_host": {
 			"value": "\\\\hanifstorageaccount.file.core.windows.net\\haniffileshare"
@@ -46,6 +58,9 @@
 		},
 		"solliancepublicdata_HTTP_properties_typeProperties_url": {
 			"value": "https://solliancepublicdata.blob.core.windows.net"
+		},
+		"app_transaction_trigger_properties_main_pipeline_parameters_job_name": {
+			"value": "app_transaction"
 		},
 		"containerUri": {
 			"value": ""
