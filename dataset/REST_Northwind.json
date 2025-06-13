@@ -1,0 +1,23 @@
+{
+	"name": "REST_Northwind",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Northwind_REST",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"relative_url": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().relative_url",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}
