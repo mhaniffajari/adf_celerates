@@ -1,0 +1,92 @@
+{
+	"name": "main_pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "lookup_job",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "@concat('select job_name,table_name from dbo.job_map where job_name = ''', pipeline().parameters.job_name, '''')",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SQL_mhanif",
+						"type": "DatasetReference",
+						"parameters": {
+							"database": "edw",
+							"schema": ".",
+							"table": "."
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "lookup_job",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('lookup_job').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Postgre_to_SQL",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "child_pipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"table_name": {
+										"value": "@item().table_name",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"job_name": {
+				"type": "string",
+				"defaultValue": "app_transaction"
+			}
+		},
+		"folder": {
+			"name": "App Transaction"
+		},
+		"annotations": []
+	}
+}
