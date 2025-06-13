@@ -1,0 +1,57 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "mhanifajariADF"
+		},
+		"hanif_Azure_File_Share_password": {
+			"value": ""
+		},
+		"hanifajari_SQL_Server_password": {
+			"value": ""
+		},
+		"hanifajaristorageaccount_Blob_Storage_connectionString": {
+			"value": ""
+		},
+		"hanifstorageaccount_Blob_Storage_connectionString": {
+			"value": ""
+		},
+		"mhanif_SQL_Server_password": {
+			"value": ""
+		},
+		"hanif_Azure_File_Share_properties_typeProperties_host": {
+			"value": "\\\\hanifstorageaccount.file.core.windows.net\\haniffileshare"
+		},
+		"hanif_Azure_File_Share_properties_typeProperties_userId": {
+			"value": "localhost\\hanifstorageaccount"
+		},
+		"hanifajari_SQL_Server_properties_typeProperties_server": {
+			"value": "hanifajari.database.windows.net"
+		},
+		"hanifajari_SQL_Server_properties_typeProperties_database": {
+			"value": "datawarehouse"
+		},
+		"hanifajari_SQL_Server_properties_typeProperties_userName": {
+			"value": "admin_sql"
+		},
+		"mhanif_SQL_Server_properties_typeProperties_server": {
+			"value": "mhanif.database.windows.net"
+		},
+		"mhanif_SQL_Server_properties_typeProperties_database": {
+			"value": "@{linkedService().database}"
+		},
+		"mhanif_SQL_Server_properties_typeProperties_userName": {
+			"value": "sql_admin_celerates"
+		},
+		"solliancepublicdata_HTTP_properties_typeProperties_url": {
+			"value": "https://solliancepublicdata.blob.core.windows.net"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

@@ -1,0 +1,160 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "mhanifajariADF"
+		},
+		"hanif_Azure_File_Share_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'hanif_Azure_File_Share'"
+		},
+		"hanifajari_SQL_Server_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'hanifajari_SQL_Server'"
+		},
+		"hanifajaristorageaccount_Blob_Storage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'hanifajaristorageaccount_Blob_Storage'"
+		},
+		"hanifstorageaccount_Blob_Storage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'hanifstorageaccount_Blob_Storage'"
+		},
+		"mhanif_SQL_Server_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'mhanif_SQL_Server'"
+		},
+		"hanif_Azure_File_Share_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\hanifstorageaccount.file.core.windows.net\\haniffileshare"
+		},
+		"hanif_Azure_File_Share_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "localhost\\hanifstorageaccount"
+		},
+		"hanifajari_SQL_Server_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "hanifajari.database.windows.net"
+		},
+		"hanifajari_SQL_Server_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "datawarehouse"
+		},
+		"hanifajari_SQL_Server_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "admin_sql"
+		},
+		"mhanif_SQL_Server_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "mhanif.database.windows.net"
+		},
+		"mhanif_SQL_Server_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "@{linkedService().database}"
+		},
+		"mhanif_SQL_Server_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sql_admin_celerates"
+		},
+		"solliancepublicdata_HTTP_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://solliancepublicdata.blob.core.windows.net"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "mhanifajariADF_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"hanif_Azure_File_Share_password": {
+						"value": "[parameters('hanif_Azure_File_Share_password')]"
+					},
+					"hanifajari_SQL_Server_password": {
+						"value": "[parameters('hanifajari_SQL_Server_password')]"
+					},
+					"hanifajaristorageaccount_Blob_Storage_connectionString": {
+						"value": "[parameters('hanifajaristorageaccount_Blob_Storage_connectionString')]"
+					},
+					"hanifstorageaccount_Blob_Storage_connectionString": {
+						"value": "[parameters('hanifstorageaccount_Blob_Storage_connectionString')]"
+					},
+					"mhanif_SQL_Server_password": {
+						"value": "[parameters('mhanif_SQL_Server_password')]"
+					},
+					"hanif_Azure_File_Share_properties_typeProperties_host": {
+						"value": "[parameters('hanif_Azure_File_Share_properties_typeProperties_host')]"
+					},
+					"hanif_Azure_File_Share_properties_typeProperties_userId": {
+						"value": "[parameters('hanif_Azure_File_Share_properties_typeProperties_userId')]"
+					},
+					"hanifajari_SQL_Server_properties_typeProperties_server": {
+						"value": "[parameters('hanifajari_SQL_Server_properties_typeProperties_server')]"
+					},
+					"hanifajari_SQL_Server_properties_typeProperties_database": {
+						"value": "[parameters('hanifajari_SQL_Server_properties_typeProperties_database')]"
+					},
+					"hanifajari_SQL_Server_properties_typeProperties_userName": {
+						"value": "[parameters('hanifajari_SQL_Server_properties_typeProperties_userName')]"
+					},
+					"mhanif_SQL_Server_properties_typeProperties_server": {
+						"value": "[parameters('mhanif_SQL_Server_properties_typeProperties_server')]"
+					},
+					"mhanif_SQL_Server_properties_typeProperties_database": {
+						"value": "[parameters('mhanif_SQL_Server_properties_typeProperties_database')]"
+					},
+					"mhanif_SQL_Server_properties_typeProperties_userName": {
+						"value": "[parameters('mhanif_SQL_Server_properties_typeProperties_userName')]"
+					},
+					"solliancepublicdata_HTTP_properties_typeProperties_url": {
+						"value": "[parameters('solliancepublicdata_HTTP_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "mhanifajariADF_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'mhanifajariADF_ArmTemplate_0')]"
+			]
+		}
+	]
+}
