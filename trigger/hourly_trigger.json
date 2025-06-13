@@ -1,0 +1,24 @@
+{
+	"name": "hourly_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "For_Each_Activity_Lookup_Log",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 1,
+				"startTime": "2025-06-13T12:45:00",
+				"timeZone": "SE Asia Standard Time"
+			}
+		}
+	}
+}
